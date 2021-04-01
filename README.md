@@ -30,3 +30,12 @@
 2. the game
 3. input
 4. header
+
+### how to verefy an solution?:
+
+1. check the sum on each row
+2. check the sum on each column
+3. check for sum on each box
+4. check for duplicate numbers on each row
+5. check for duplicate numbers on each column
+6. check for duplicate numbers on each box
