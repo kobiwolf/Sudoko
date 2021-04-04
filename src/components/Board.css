@@ -3,3 +3,11 @@
   grid-template-columns: repeat(9, 4rem);
   grid-template-rows: repeat(9, 4rem);
 }
+[data-row='2'],
+[data-row='5'] {
+  border-bottom: black 10px solid;
+}
+[data-col='2'],
+[data-col='5'] {
+  border-right: 10px black solid;
+}

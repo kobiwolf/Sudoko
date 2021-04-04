@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Input from './Input';
 import Button from './Button';
+import './Board.css';
 
 function Board({ setValues, values }) {
   const [rowsCols, setRowsCols] = useState([]);
@@ -16,16 +17,12 @@ function Board({ setValues, values }) {
     }
   }, []);
   const onButtonClick = () => {
-    // let arr = Object.values(values);
-
-    // if (arr.length < rowsCols.length)
-    //   alert('you must fill up all the board in order to check result');
-    // else {
-    // }
-
-    console.log(checkSolution(values));
+    let arr = Object.values(values);
+    if (arr.length < rowsCols.length)
+      alert('you must fill up all the board in order to check result');
+    else console.log(checkSolution(values));
   };
-  const putValuesToRowsCols = (values) => {
+  const putValuesToSquaresCols = (values) => {
     //helpers funcs
     function between(x, min, max, y, min2 = min, max2 = max) {
       return x >= min && x <= max && y >= min2 && y <= max2;
@@ -56,7 +53,7 @@ function Board({ setValues, values }) {
           case between(row, 3, 5, col, 0, 2):
             fillValuesObj('3', value);
             break;
-          case between(row, 3, 5, col, 3, 5):
+          case between(row, 3, 5, col):
             fillValuesObj('4', value);
             break;
           case between(row, 3, 5, col, 6, 8):
@@ -68,7 +65,7 @@ function Board({ setValues, values }) {
           case between(row, 6, 8, col, 3, 5):
             fillValuesObj('7', value);
             break;
-          case between(row, 6, 8, col, 6, 8):
+          case between(row, 6, 8, col):
             fillValuesObj('8', value);
             break;
           default:
@@ -78,100 +75,33 @@ function Board({ setValues, values }) {
     }
     return { valuesSquares, arrOfSets, valuesCols };
   };
-  const toFillBoard = () => {
-    const a = [
-      5,
-      1,
-      7,
-      6,
-      9,
-      8,
-      2,
-      3,
-      4,
-      2,
-      8,
-      9,
-      1,
-      3,
-      4,
-      7,
-      5,
-      6,
-      3,
-      4,
-      6,
-      2,
-      7,
-      5,
-      8,
-      9,
-      1,
-      6,
-      7,
-      2,
-      8,
-      4,
-      9,
-      3,
-      1,
-      5,
-      1,
-      3,
-      8,
-      5,
-      2,
-      6,
-      9,
-      4,
-      7,
-      9,
-      5,
-      4,
-      7,
-      1,
-      3,
-      6,
-      8,
-      2,
-      4,
-      9,
-      5,
-      3,
-      6,
-      2,
-      1,
-      7,
-      8,
-      7,
-      2,
-      3,
-      4,
-      8,
-      1,
-      5,
-      6,
-      9,
-      8,
-      6,
-      1,
-      9,
-      5,
-      7,
-      4,
-      2,
-      3,
-    ];
-    const clone = JSON.parse(JSON.stringify(values));
-    for (let i = 0; i < 9; i++) {
+  const createStartBoard = () => {
+    const seti = new Set();
+    while (seti.size < 9) {
+      seti.add(Math.ceil(Math.random() * 9));
+    }
+    const arr = {};
+    arr[0] = [...seti];
+    for (let i = 1; i < 9; i++) {
+      arr[i] = [];
       for (let j = 0; j < 9; j++) {
-        clone[`${i}`][j] = a[i * 9 + j];
+        if (i !== 3 && i !== 6) {
+          arr[i][j] = j < 6 ? arr[i - 1][j + 3] : arr[i - 1][j - 6];
+        } else {
+          arr[i][j] = j === 8 ? arr[i - 1][0] : arr[i - 1][j + 1];
+        }
       }
     }
-    setValues(clone);
+    for (let i = 0; i < 30; i++) {
+      const randomRow = Math.ceil(Math.random() * 8);
+      const randomCol = Math.ceil(Math.random() * 8);
+      arr[randomRow][randomCol] = '';
+      arr[8 - randomRow][8 - randomCol] = '';
+    }
+    setValues(arr);
   };
   const checkSolution = (valuesRows) => {
-    const { valuesSquares, arrOfSets, valuesCols } = putValuesToRowsCols(
+    const { valuesSquares, arrOfSets, valuesCols } = putValuesToSquaresCols(
       valuesRows
     );
     for (let i = 0; i < arrOfSets.length; i++) {
@@ -202,7 +132,7 @@ function Board({ setValues, values }) {
           })}
         </div>
         <Button text="check" func={onButtonClick} />
-        <Button text="fill" func={toFillBoard} />
+        <Button text="fillmode" func={createStartBoard} />
       </>
     );
   };
