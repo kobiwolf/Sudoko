@@ -1,13 +1,27 @@
 import React from 'react';
+import styled from 'styled-components';
 import deepCopy from '../helpFuncs/deepCopy';
-import './Input.css';
+
+const StyleInput = styled.input`
+  text-align: center;
+  font-size: larger;
+  border: 1px solid black;
+  border-bottom: ${(props) =>
+    props.row === 2 || props.row === 5
+      ? 'black 10px solid'
+      : '1px solid black'};
+  border-right: ${(props) =>
+    props.col === 2 || props.col === 5
+      ? 'black 10px solid'
+      : '1px solid black'};
+`;
 export default function Input({ row, col, state, setState, moves, setMoves }) {
   return (
-    <input
+    <StyleInput
       type="text"
       className="input"
-      data-row={row}
-      data-col={col}
+      row={row}
+      col={col}
       maxLength="1"
       value={state[`${row}`][col]}
       onChange={({ nativeEvent: { data } }) => {

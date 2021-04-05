@@ -1,6 +1,29 @@
 import React from 'react';
+import styled from 'styled-components';
 import Button from './Button';
-import './Form.css';
+
+const StyleForm = styled.form`
+  border: 3px solid black;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+`;
+const StyleButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline;
+  &:hover {
+    text-decoration: none;
+  }
+  &:focus {
+    text-decoration: none;
+  }
+`;
 export default function Form({
   buttonText,
   buttonFunc,
@@ -8,7 +31,7 @@ export default function Form({
   allReadySigned,
 }) {
   return (
-    <form
+    <StyleForm
       onSubmit={(e) => {
         e.preventDefault();
       }}
@@ -20,10 +43,10 @@ export default function Form({
       <input type="text" id="password" />
       <Button text={buttonText} func={buttonFunc} />
       {!allReadySigned && (
-        <button className="link-button" onClick={() => buttonFunc()}>
+        <StyleButton onClick={() => buttonFunc()}>
           all Ready Signed?
-        </button>
+        </StyleButton>
       )}
-    </form>
+    </StyleForm>
   );
 }

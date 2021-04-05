@@ -1,13 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Input from './Input';
+import styled from 'styled-components';
 
+import Input from './Input';
 import deepCopy from '../helpFuncs/deepCopy';
 import H3 from './H3';
 import Button from './Button';
-import './Board.css';
 import Select from './Select';
 import uniqid from 'uniqid';
+
+const StyleBoard = styled.div`
+  display: grid;
+  grid-template-columns: repeat(9, 4rem);
+  grid-template-rows: repeat(9, 4rem);
+`;
 
 function Board({ setValues, values }) {
   const [rowsCols, setRowsCols] = useState([]);
@@ -158,7 +164,7 @@ function Board({ setValues, values }) {
   const display = () => {
     return (
       <>
-        <div className="board">
+        <StyleBoard>
           {rowsCols.map(({ row, col }) => {
             return (
               <React.Fragment key={uniqid()}>
@@ -177,7 +183,7 @@ function Board({ setValues, values }) {
               </React.Fragment>
             );
           })}
-        </div>
+        </StyleBoard>
         <Button text="check" func={onButtonClick} />
         <Button text="fill mode" func={createStartBoard} />
         <Button text="undo" func={undoAction} />

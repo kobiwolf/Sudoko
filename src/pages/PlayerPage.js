@@ -15,6 +15,7 @@ export default function PlayerPage() {
       .catch((e) => errorHandle(e));
   }
   useEffect(() => {
+    console.log('wow');
     getData();
   }, []);
   function display() {
