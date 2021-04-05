@@ -1,24 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Input from './Input';
+
+import deepCopy from '../helpFuncs/deepCopy';
+import H3 from './H3';
 import Button from './Button';
 import './Board.css';
+import Select from './Select';
+import uniqid from 'uniqid';
 
 function Board({ setValues, values }) {
   const [rowsCols, setRowsCols] = useState([]);
+  const [intialValues, setInitialValues] = useState([]);
+  const [moves, setMoves] = useState([]);
+  const selectRefGridNum = useRef();
+  const selectRefLevel = useRef();
+  const [gridSize, setGridSize] = useState(9);
+  const [level, setLevel] = useState('easy');
+
   useEffect(() => {
     const rowsColsCopy = [];
-    for (let row = 0; row < 9; row++) {
-      values[`${row}`] = Array(9).fill('');
+    for (let row = 0; row < gridSize; row++) {
+      values[`${row}`] = Array(gridSize).fill('');
       setValues(values);
-      for (let col = 0; col < 9; col++) {
+      for (let col = 0; col < gridSize; col++) {
         rowsColsCopy.push({ row, col });
         setRowsCols(rowsColsCopy);
       }
     }
+    createStartBoard();
   }, []);
   const onButtonClick = () => {
-    let arr = Object.values(values);
-    if (arr.length < rowsCols.length)
+    let filledValues = Object.values(values)
+      .flat()
+      .filter((cell) => cell);
+    if (filledValues.length < gridSize * gridSize)
       alert('you must fill up all the board in order to check result');
     else console.log(checkSolution(values));
   };
@@ -35,9 +51,9 @@ function Board({ setValues, values }) {
     const arrOfSets = [];
     const valuesSquares = {};
     const valuesCols = {};
-    for (let row = 0; row < 9; row++) {
+    for (let row = 0; row < gridSize; row++) {
       arrOfSets.push(new Set(values[row]));
-      for (let col = 0; col < 9; col++) {
+      for (let col = 0; col < gridSize; col++) {
         const value = values[row][col];
         fillValuesObj(row, values[col][row], valuesCols);
         switch (true) {
@@ -77,14 +93,14 @@ function Board({ setValues, values }) {
   };
   const createStartBoard = () => {
     const seti = new Set();
-    while (seti.size < 9) {
-      seti.add(Math.ceil(Math.random() * 9));
+    while (seti.size < gridSize) {
+      seti.add(Math.ceil(Math.random() * gridSize));
     }
     const arr = {};
     arr[0] = [...seti];
-    for (let i = 1; i < 9; i++) {
+    for (let i = 1; i < gridSize; i++) {
       arr[i] = [];
-      for (let j = 0; j < 9; j++) {
+      for (let j = 0; j < gridSize; j++) {
         if (i !== 3 && i !== 6) {
           arr[i][j] = j < 6 ? arr[i - 1][j + 3] : arr[i - 1][j - 6];
         } else {
@@ -92,24 +108,48 @@ function Board({ setValues, values }) {
         }
       }
     }
-    for (let i = 0; i < 30; i++) {
-      const randomRow = Math.ceil(Math.random() * 8);
-      const randomCol = Math.ceil(Math.random() * 8);
+    let pairsToBeDeleted;
+    switch (level) {
+      case 'hard':
+        pairsToBeDeleted = 40;
+        break;
+      case 'medium':
+        pairsToBeDeleted = 30;
+        break;
+      default:
+        pairsToBeDeleted = 25;
+        break;
+    }
+    for (let i = 0; i < pairsToBeDeleted; i++) {
+      const randomRow = Math.floor(Math.random() * gridSize);
+      const randomCol = Math.floor(Math.random() * gridSize);
       arr[randomRow][randomCol] = '';
-      arr[8 - randomRow][8 - randomCol] = '';
+      arr[gridSize - 1 - randomRow][gridSize - 1 - randomCol] = '';
     }
     setValues(arr);
+    setInitialValues(arr);
+  };
+  const undoAction = () => {
+    if (!moves.length) return;
+    const [row, col, oldValue] = moves[moves.length - 1];
+    const copyValues = deepCopy(values);
+    const copyMoves = deepCopy(moves);
+    copyValues[row][col] = oldValue;
+    copyMoves.pop();
+    setValues(copyValues);
+    setMoves(copyMoves);
   };
   const checkSolution = (valuesRows) => {
     const { valuesSquares, arrOfSets, valuesCols } = putValuesToSquaresCols(
       valuesRows
     );
+    const sum = gridSize === 9 ? 45 : 10;
     for (let i = 0; i < arrOfSets.length; i++) {
       if (
-        arrOfSets[i].size !== 9 ||
-        valuesRows[i].reduce((a, b) => a + b, 0) !== 45 ||
-        valuesSquares[i].reduce((a, b) => a + b, 0) !== 45 ||
-        valuesCols[i].reduce((a, b) => a + b, 0) !== 45
+        arrOfSets[i].gridSize !== gridSize ||
+        valuesRows[i].reduce((a, b) => a + b, 0) !== sum ||
+        valuesSquares[i].reduce((a, b) => a + b, 0) !== sum ||
+        valuesCols[i].reduce((a, b) => a + b, 0) !== sum
       )
         return false;
     }
@@ -121,21 +161,42 @@ function Board({ setValues, values }) {
         <div className="board">
           {rowsCols.map(({ row, col }) => {
             return (
-              <Input
-                key={`${row}.${col}`}
-                row={row}
-                col={col}
-                state={values}
-                setState={setValues}
-              />
+              <React.Fragment key={uniqid()}>
+                {intialValues[row][col] ? (
+                  <H3 text={values[row][col]} row={row} col={col} />
+                ) : (
+                  <Input
+                    row={row}
+                    col={col}
+                    state={values}
+                    setState={setValues}
+                    moves={moves}
+                    setMoves={setMoves}
+                  />
+                )}
+              </React.Fragment>
             );
           })}
         </div>
         <Button text="check" func={onButtonClick} />
-        <Button text="fillmode" func={createStartBoard} />
+        <Button text="fill mode" func={createStartBoard} />
+        <Button text="undo" func={undoAction} />
+        <Select
+          sendRef={selectRefLevel}
+          options={['easy', 'medium', 'hard']}
+          state={level}
+          setState={setLevel}
+        />
+        {/* <Select
+            sendRef={selectRefGridNum}
+            options={[4, 9]}
+            state={gridSize}
+            setState={setGridSize}
+          /> */}
+        <Link to="/">to main</Link>
       </>
     );
   };
-  return <>{display()}</>;
+  return <>{intialValues[0] ? display() : <h2>loading</h2>}</>;
 }
 export default Board;

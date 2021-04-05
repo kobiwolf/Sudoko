@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Board from './components/Board';
+import WelcomePage from './pages/WelcomePage';
 function App() {
   const [values, setValues] = useState({});
   useEffect(() => {
@@ -9,7 +12,16 @@ function App() {
 
   return (
     <>
-      <Board setValues={setValues} values={values} />
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" exact>
+            <WelcomePage />
+          </Route>
+          <Route path="/board" exact>
+            <Board setValues={setValues} values={values} />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </>
   );
 }

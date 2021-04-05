@@ -1,0 +1,16 @@
+form {
+  border: 3px solid black;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+}
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:hover {
+  cursor: pointer;
+}
