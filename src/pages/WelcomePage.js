@@ -11,6 +11,7 @@ export default function WelcomePage() {
   return (
     <div>
       <Link to="/board">to board</Link>
+      <Link to="/player">to player</Link>
       {isSigned ? (
         <Form
           title="Sign In FORM"

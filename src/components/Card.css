@@ -1,0 +1,10 @@
+.card {
+  display: flex;
+  justify-content: space-around;
+  border: black 3px solid;
+  border-radius: 10px;
+  margin: 5rem 1rem;
+}
+.card:hover {
+  transform: scale(1.5);
+}

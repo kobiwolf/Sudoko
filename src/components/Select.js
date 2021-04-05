@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './Select.css';
 export default function Select({ sendRef, options, state, setState }) {
   return (

@@ -19,7 +19,11 @@ export default function Form({
       <label htmlFor="password">Password:</label>
       <input type="text" id="password" />
       <Button text={buttonText} func={buttonFunc} />
-      {!allReadySigned && <a onClick={() => buttonFunc()}>all Ready Signed?</a>}
+      {!allReadySigned && (
+        <button className="link-button" onClick={() => buttonFunc()}>
+          all Ready Signed?
+        </button>
+      )}
     </form>
   );
 }
