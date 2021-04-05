@@ -4,9 +4,8 @@ import Button from '../components/Button';
 import Form from '../components/Form';
 export default function WelcomePage() {
   const [isSigned, setIsSigned] = useState(false);
-  const toggleIsSigned = () => {
-    console.log(isSigned);
-    setIsSigned(!isSigned);
+  const getNamePassword = () => {
+    console.log('got the password!');
   };
   return (
     <div>
@@ -16,14 +15,18 @@ export default function WelcomePage() {
         <Form
           title="Sign In FORM"
           buttonText="LOG IN"
-          buttonFunc={toggleIsSigned}
+          toggleText="hoo...new here?"
+          buttonFunc={getNamePassword}
+          setState={setIsSigned}
           allReadySigned={true}
         />
       ) : (
         <Form
           title="Sign up FORM"
           buttonText="LOG up"
-          buttonFunc={toggleIsSigned}
+          buttonFunc={getNamePassword}
+          toggleText="Already have an account?"
+          setState={setIsSigned}
           allReadySigned={false}
         />
       )}

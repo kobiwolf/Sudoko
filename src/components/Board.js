@@ -102,7 +102,7 @@ function Board({ setValues, values }) {
     while (seti.size < gridSize) {
       seti.add(Math.ceil(Math.random() * gridSize));
     }
-    const arr = {};
+    let arr = {};
     arr[0] = [...seti];
     for (let i = 1; i < gridSize; i++) {
       arr[i] = [];
@@ -126,6 +126,29 @@ function Board({ setValues, values }) {
         pairsToBeDeleted = 25;
         break;
     }
+    // this if made for another rotate of the sudoku in order to confuse
+    if (Math.random() > 0.1) {
+      const copy = deepCopy(arr);
+      for (let x = 0; x < 9; x++) {
+        for (let y = 0; y < 9; y++) {
+          copy[x][y] = arr[y][8 - x];
+          copy[y][8 - x] = arr[8 - x][8 - y];
+          copy[8 - x][8 - y] = arr[8 - y][x];
+          copy[8 - y][x] = arr[x][y];
+        }
+      }
+      arr = deepCopy(copy);
+    }
+
+    const copy = deepCopy(arr);
+    for (let x = 0; x < 9; x++) {
+      copy[3][x] = arr[5][x];
+      copy[5][x] = arr[3][x];
+
+      console.log('wow');
+    }
+    arr = deepCopy(copy);
+
     for (let i = 0; i < pairsToBeDeleted; i++) {
       const randomRow = Math.floor(Math.random() * gridSize);
       const randomCol = Math.floor(Math.random() * gridSize);
@@ -152,7 +175,7 @@ function Board({ setValues, values }) {
     const sum = gridSize === 9 ? 45 : 10;
     for (let i = 0; i < arrOfSets.length; i++) {
       if (
-        arrOfSets[i].gridSize !== gridSize ||
+        arrOfSets[i].size !== gridSize ||
         valuesRows[i].reduce((a, b) => a + b, 0) !== sum ||
         valuesSquares[i].reduce((a, b) => a + b, 0) !== sum ||
         valuesCols[i].reduce((a, b) => a + b, 0) !== sum
