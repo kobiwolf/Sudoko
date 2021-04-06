@@ -8,12 +8,18 @@ const StyleHead = styled.header`
   display: flex;
   justify-content: space-around;
 `;
-const Header = () => (
+const Header = ({ isLogged }) => (
   <StyleHead>
-    <Link to="/">Home</Link>
-    <Link to="/Players">Players Status</Link>
-    <Link to="/board">game</Link>
-    <a href="/">log out</a>
+    {isLogged ? (
+      <>
+        <Link to="/">Home</Link>
+        <Link to="/Players">Players Status</Link>
+        <Link to="/board">game</Link>
+        <a href="/">log out</a>
+      </>
+    ) : (
+      <h1>Welcome to SFF(Sudoku For Friends)</h1>
+    )}
   </StyleHead>
 );
 export default Header;

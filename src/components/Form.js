@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from './Button';
 import api from '../helpFuncs/Api';
+import ErrorMassage from './ErrorMassage';
+import LabelInputForm from './LabalInputForm';
+import fetchData from '../helpFuncs/fetchData';
 
 const StyleForm = styled.form`
   border: 3px solid black;
@@ -25,15 +28,10 @@ const StyleButton = styled.button`
     text-decoration: none;
   }
 `;
-const StyledSpan = styled.span`
-  display: block;
-  color: red;
-  font-size: 0.8rem;
-`;
+
 export default function Form({
   setIsLogged,
   buttonText,
-  buttonFunc,
   title,
   allReadySigned,
   toggleText,
@@ -45,11 +43,6 @@ export default function Form({
   const [wrongInput, setWrongInput] = useState(false);
   const [nameTaken, setNameTaken] = useState(false);
   const [isFoundName, setIsFoundName] = useState(true);
-
-  const fetchData = async () => {
-    const { data } = await api.get('/');
-    return data;
-  };
 
   const signInSubmit = async () => {
     const data = await fetchData();
@@ -64,20 +57,18 @@ export default function Form({
   };
   const signUpSubmit = async () => {
     const data = await fetchData();
-    console.log(data);
     if (data.find((player) => player.name === name)) setNameTaken(true);
     else {
       setIsLogged(true);
       await api.post('/', { name, password, score: 0 });
+      setPlayerDetails({ name: name, score: 0 });
     }
   };
   const onButtonClick = () => {
-    console.log(name.length);
     if (name.length < 8 || password.length < 8) setWrongInput(true);
     else allReadySigned ? signInSubmit() : signUpSubmit();
   };
-  const toggleDisplay = (condition, text) =>
-    condition ? <StyledSpan>{text}</StyledSpan> : null;
+
   return (
     <StyleForm
       onSubmit={(e) => {
@@ -85,43 +76,40 @@ export default function Form({
       }}
     >
       <h1>{title}</h1>
-      <label htmlFor="name">Name:</label>
-      <input
+      <LabelInputForm
+        textLabel="Name"
         type="text"
-        id="name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        myState={name}
+        setMyState={setName}
       />
-      {toggleDisplay(
-        !allReadySigned,
-        '*A name must be unique and have at least 8 letters/digits'
-      )}
-
-      <label htmlFor="password">Password:</label>
-      {toggleDisplay(
-        !allReadySigned,
-        '*A Password must have at least 8 letters/digits'
-      )}
-      <input
+      <ErrorMassage
+        condition={!allReadySigned}
+        text="*A name must be unique and have at least 8 letters/digits"
+      />
+      <LabelInputForm
+        textLabel="Password"
         type={title === 'Sign In FORM' ? 'password' : 'text'}
-        id="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        myState={password}
+        setMyState={setPassword}
       />
-      {toggleDisplay(
-        wrongInput,
-        'Your name or your password are invalid,please check again'
-      )}
+      <ErrorMassage
+        condition={!allReadySigned}
+        text="*A Password must have at least 8 letters/digits"
+      />
+      <ErrorMassage
+        condition={wrongInput}
+        text="Your name or your password are invalid,please check again"
+      />
 
       <Button text={buttonText} func={onButtonClick} />
-      {toggleDisplay(
-        !isFoundName,
-        "sorry,we didn't find your name or your password is incorrect...please check again"
-      )}
-      {toggleDisplay(
-        nameTaken,
-        'Sorry,name already taken please choose another name'
-      )}
+      <ErrorMassage
+        condition={!isFoundName}
+        text="sorry,we didn't find your name or your password is incorrect...please check again"
+      />
+      <ErrorMassage
+        condition={nameTaken}
+        text="Sorry,name already taken please choose another name"
+      />
       <StyleButton
         onClick={() => {
           setWrongInput(false);

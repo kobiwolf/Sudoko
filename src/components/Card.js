@@ -13,10 +13,11 @@ const StyleCard = styled.div`
   }
 `;
 
-export default function Card({ name, score, source }) {
+export default function Card({ name, score, source, time }) {
   return (
     <StyleCard>
       <h2>{name}</h2>
+      {time && <h2>best time:{`${time[0]} tt${time[1]}`}</h2>}
       <img src={source} alt={`${name}'s avatar`} />
       <h2>score:{score}</h2>
     </StyleCard>

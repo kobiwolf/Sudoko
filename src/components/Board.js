@@ -1,13 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import styled from 'styled-components';
+import uniqid from 'uniqid';
+
+import deepCopy from '../helpFuncs/deepCopy';
+import fetchData from '../helpFuncs/fetchData';
+import errorHandle from '../helpFuncs/errorHandle';
+import Api from '../helpFuncs/Api';
 
 import Input from './Input';
-import deepCopy from '../helpFuncs/deepCopy';
 import H3 from './H3';
 import Button from './Button';
 import Select from './Select';
-import uniqid from 'uniqid';
+import Timer from './Timer';
+import WonMassage from './WonMassage';
 
 const StyleBoard = styled.div`
   display: grid;
@@ -15,14 +21,17 @@ const StyleBoard = styled.div`
   grid-template-rows: repeat(9, 4rem);
 `;
 
-function Board({ setValues, values }) {
+function Board({ setValues, values, setPlayerDetails, playerDetails }) {
   const [rowsCols, setRowsCols] = useState([]);
   const [intialValues, setInitialValues] = useState([]);
   const [moves, setMoves] = useState([]);
-  const selectRefGridNum = useRef();
   const selectRefLevel = useRef();
   const [gridSize, setGridSize] = useState(9);
   const [level, setLevel] = useState('easy');
+  const [isWon, setIsWon] = useState(false);
+  const minutesRef = useRef();
+  const secsRef = useRef();
+
   // const [myRefs, setMyRefs] = useState([]);
 
   useEffect(() => {
@@ -37,14 +46,59 @@ function Board({ setValues, values }) {
     }
     createStartBoard();
   }, []);
+  const updateTimeAndScore = () => {
+    const calcScore = (minutes, level) => {
+      let score = 15;
+      if (minutes < 4) score = score * 1.2;
+      switch (level) {
+        case 'medium':
+          score = score * 1.2;
+          break;
+        case 'hard':
+          score = score * 1.4;
+          break;
+        default:
+          break;
+      }
+      return score;
+    };
+
+    const copy = deepCopy(playerDetails);
+    const secs = secsRef.current.innerHTML;
+    const minutes = minutesRef.current.innerHTML;
+    copy.score = copy.score + calcScore(minutes, level);
+    const newTime = minutes * 60 + secs;
+    if (copy.time?.length) {
+      const oldTime = copy.time[0] * 60 + copy.time[1];
+      if (newTime > oldTime) copy.time = [minutes, secs];
+    } else copy.time = [[minutes, secs]];
+    setPlayerDetails(copy);
+    fetchData().then((promise) => {
+      const match = promise.find((person) => person.name === copy.name);
+      Api.put(`/${match.id}`, {
+        ...playerDetails,
+        score: copy.score,
+        time: copy.time,
+      }).catch((e) => {
+        errorHandle(e);
+      });
+    });
+  };
   const onButtonClick = () => {
-    let filledValues = Object.values(values)
+    const filledValues = Object.values(values)
       .flat()
       .filter((cell) => cell);
     if (filledValues.length < gridSize * gridSize)
       alert('you must fill up all the board in order to check result');
-    else console.log(checkSolution(values));
+    else {
+      const booli = checkSolution(values);
+      if (booli) {
+        updateTimeAndScore();
+        setIsWon(booli);
+      }
+    }
   };
+
   const putValuesToSquaresCols = (values) => {
     //helpers funcs
     function between(x, min, max, y, min2 = min, max2 = max) {
@@ -99,12 +153,12 @@ function Board({ setValues, values }) {
     return { valuesSquares, arrOfSets, valuesCols };
   };
   const createStartBoard = () => {
+    setIsWon(false);
     const seti = new Set();
     while (seti.size < gridSize) {
       seti.add(Math.ceil(Math.random() * gridSize));
     }
     let arr = {};
-
     arr[0] = [...seti];
     for (let i = 1; i < gridSize; i++) {
       arr[i] = [];
@@ -141,16 +195,12 @@ function Board({ setValues, values }) {
       }
       arr = deepCopy(copy);
     }
-
     const copy = deepCopy(arr);
     for (let x = 0; x < 9; x++) {
       copy[3][x] = arr[5][x];
       copy[5][x] = arr[3][x];
-
-      console.log('wow');
     }
     arr = deepCopy(copy);
-
     for (let i = 0; i < pairsToBeDeleted; i++) {
       const randomRow = Math.floor(Math.random() * gridSize);
       const randomCol = Math.floor(Math.random() * gridSize);
@@ -163,10 +213,10 @@ function Board({ setValues, values }) {
   };
   const undoAction = () => {
     if (!moves.length) return;
-    const [row, col, oldValue] = moves[moves.length - 1];
+    const [row, col, oldTime] = moves[moves.length - 1];
     const copyValues = deepCopy(values);
     const copyMoves = deepCopy(moves);
-    copyValues[row][col] = oldValue;
+    copyValues[row][col] = oldTime;
     copyMoves.pop();
     setValues(copyValues);
     setMoves(copyMoves);
@@ -176,6 +226,7 @@ function Board({ setValues, values }) {
       valuesRows
     );
     const sum = gridSize === 9 ? 45 : 10;
+
     for (let i = 0; i < arrOfSets.length; i++) {
       if (
         arrOfSets[i].size !== gridSize ||
@@ -191,43 +242,51 @@ function Board({ setValues, values }) {
   const display = () => {
     return (
       <>
-        <StyleBoard>
-          {rowsCols.map(({ row, col }) => {
-            return (
-              <React.Fragment key={uniqid()}>
-                {intialValues[row][col] ? (
-                  <H3 text={values[row][col]} row={row} col={col} />
-                ) : (
-                  <Input
-                    row={row}
-                    col={col}
-                    state={values}
-                    setState={setValues}
-                    moves={moves}
-                    setMoves={setMoves}
-                  />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </StyleBoard>
-        <Button text="check" func={onButtonClick} />
-        <Button text="fill mode" func={createStartBoard} />
-        <Button text="undo" func={undoAction} />
+        {!isWon ? (
+          <>
+            <Timer ref1={secsRef} ref2={minutesRef} />
+            <StyleBoard>
+              {rowsCols.map(({ row, col }) => {
+                return (
+                  <React.Fragment key={uniqid()}>
+                    {intialValues[row][col] ? (
+                      <H3 text={values[row][col]} row={row} col={col} />
+                    ) : (
+                      <Input
+                        row={row}
+                        col={col}
+                        state={values}
+                        setState={setValues}
+                        moves={moves}
+                        setMoves={setMoves}
+                      />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </StyleBoard>
+          </>
+        ) : (
+          <WonMassage playerDetails={playerDetails} />
+        )}
+        <div>
+          <Button text="check" func={onButtonClick} />
+          <Button text="fill mode" func={createStartBoard} />
+          <Button text="undo" func={undoAction} />
 
-        <Select
-          sendRef={selectRefLevel}
-          options={['easy', 'medium', 'hard']}
-          state={level}
-          setState={setLevel}
-        />
+          <Select
+            sendRef={selectRefLevel}
+            options={['easy', 'medium', 'hard']}
+            state={level}
+            setState={setLevel}
+          />
+        </div>
         {/* <Select
             sendRef={selectRefGridNum}
             options={[4, 9]}
             state={gridSize}
             setState={setGridSize}
           /> */}
-        <Link to="/">to main</Link>
       </>
     );
   };
