@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
 import Board from './components/Board';
-import WelcomePage from './pages/WelcomePage';
-import PlayerPage from './pages/PlayerPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
-
+import HomePage from './pages/HomePage';
+import ConnectPage from './pages/ConnectPage';
+import PlayerPage from './pages/PlayerPage';
 const StyleContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,18 +16,23 @@ const StyleContainer = styled.div`
 `;
 function App() {
   const [values, setValues] = useState({});
+  const [isLogged, setIsLogged] = useState(false);
+  const [playerDetails, setPlayerDetails] = useState({});
+
   useEffect(() => {
     console.log(values);
   }, [values]);
-
-  return (
-    <>
-      <BrowserRouter>
+  useEffect(() => {
+    console.log('IS CONNECTED:', isLogged);
+  }, [isLogged]);
+  const displayIfLogged = () => {
+    return (
+      <>
         <Header />
         <StyleContainer>
           <Switch>
             <Route path="/" exact>
-              <WelcomePage />
+              <HomePage playerDetails={playerDetails} />
             </Route>
             <Route path="/board" exact>
               <Board setValues={setValues} values={values} />
@@ -38,6 +43,25 @@ function App() {
           </Switch>
         </StyleContainer>
         <Footer />
+      </>
+    );
+  };
+  const displayIfNotLogged = () => {
+    return (
+      <Switch>
+        <Route path="/" exact>
+          <ConnectPage
+            setIsLogged={setIsLogged}
+            setPlayerDetails={setPlayerDetails}
+          />
+        </Route>
+      </Switch>
+    );
+  };
+  return (
+    <>
+      <BrowserRouter>
+        {isLogged ? displayIfLogged() : displayIfNotLogged()}
       </BrowserRouter>
     </>
   );

@@ -6,10 +6,10 @@ import Card from '../components/Card';
 
 export default function PlayerPage() {
   const [playersData, setPlayersData] = useState([]);
-  function getData() {
-    Api()
-      .get('/Players')
+  async function getData() {
+    await Api.get('/')
       .then((promise) => {
+        console.log(promise);
         setPlayersData(promise.data);
       })
       .catch((e) => errorHandle(e));

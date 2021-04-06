@@ -8,20 +8,12 @@ const StyleHead = styled.header`
   display: flex;
   justify-content: space-around;
 `;
-const StyleButtonLink = styled.button`
-  background: none;
-  border: none;
-  font-family: arial, sans-serif;
-  color: #069;
-  text-decoration: underline;
-  cursor: pointer;
-`;
 const Header = () => (
   <StyleHead>
+    <Link to="/">Home</Link>
     <Link to="/Players">Players Status</Link>
-    <StyleButtonLink onClick={() => console.log('wow')}>
-      log out
-    </StyleButtonLink>
+    <Link to="/board">game</Link>
+    <a href="/">log out</a>
   </StyleHead>
 );
 export default Header;

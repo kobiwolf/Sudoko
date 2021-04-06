@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-export default function Api() {
+function Api() {
   return axios.create({
-    baseURL: 'https://605af4e427f0050017c05b1f.mockapi.io/',
+    baseURL: 'https://605af4e427f0050017c05b1f.mockapi.io/Players',
   });
 }
+export default Api();

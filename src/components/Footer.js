@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const StyleFooter = styled.footer`
-  height: 2rem;
-  background-color: lightgray;
+  height: max-content;
+  background-color: lightgrey;
   display: flex;
   justify-content: space-around;
 `;

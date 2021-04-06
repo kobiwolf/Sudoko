@@ -23,6 +23,7 @@ function Board({ setValues, values }) {
   const selectRefLevel = useRef();
   const [gridSize, setGridSize] = useState(9);
   const [level, setLevel] = useState('easy');
+  // const [myRefs, setMyRefs] = useState([]);
 
   useEffect(() => {
     const rowsColsCopy = [];
@@ -103,6 +104,7 @@ function Board({ setValues, values }) {
       seti.add(Math.ceil(Math.random() * gridSize));
     }
     let arr = {};
+
     arr[0] = [...seti];
     for (let i = 1; i < gridSize; i++) {
       arr[i] = [];
@@ -155,6 +157,7 @@ function Board({ setValues, values }) {
       arr[randomRow][randomCol] = '';
       arr[gridSize - 1 - randomRow][gridSize - 1 - randomCol] = '';
     }
+
     setValues(arr);
     setInitialValues(arr);
   };
@@ -184,6 +187,7 @@ function Board({ setValues, values }) {
     }
     return true;
   };
+
   const display = () => {
     return (
       <>
@@ -210,6 +214,7 @@ function Board({ setValues, values }) {
         <Button text="check" func={onButtonClick} />
         <Button text="fill mode" func={createStartBoard} />
         <Button text="undo" func={undoAction} />
+
         <Select
           sendRef={selectRefLevel}
           options={['easy', 'medium', 'hard']}
