@@ -20,9 +20,13 @@ const StyleBoard = styled.div`
   grid-template-columns: repeat(9, 4rem);
   grid-template-rows: repeat(9, 4rem);
 
-  @media (max-width: 500px) {
+  @media (max-width: 650px) {
     grid-template-columns: repeat(9, 2.5rem);
     grid-template-rows: repeat(9, 3rem);
+  }
+  @media (max-height: 650px) {
+    grid-template-columns: repeat(9, 3rem);
+    grid-template-rows: repeat(9, 2.1rem);
   } ;
 `;
 

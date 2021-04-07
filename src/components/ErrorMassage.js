@@ -5,6 +5,7 @@ const StyledSpan = styled.span`
   display: block;
   color: red;
   font-size: 0.8rem;
+  margin: auto 1rem;
 `;
 export default function ErrorMassage({ condition, text }) {
   return condition ? <StyledSpan>{text}</StyledSpan> : null;

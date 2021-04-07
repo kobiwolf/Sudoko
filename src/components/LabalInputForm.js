@@ -15,8 +15,8 @@ export default function LabelInputForm({
   };
   return (
     <>
-      <label htmlFor={textLabel}>{textLabel}:</label>
-      <div>
+      <div className="field">
+        <label htmlFor={textLabel}>{textLabel}:</label>
         <input
           placeholder={textLabel}
           ref={inputRef}

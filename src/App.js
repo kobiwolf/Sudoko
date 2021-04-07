@@ -15,8 +15,10 @@ const StyleContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  max-height: 82vh;
+  height: -webkit-fill-available;
+  @media (max-width: 600px) {
+    max-height: 82%;
+  }
 `;
 function App() {
   const [isLogged, setIsLogged] = useState(false);

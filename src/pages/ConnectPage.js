@@ -12,8 +12,8 @@ export default function WelcomePage({ setIsLogged, setPlayerDetails }) {
           <Form
             setPlayerDetails={setPlayerDetails}
             setIsLogged={setIsLogged}
-            title="Sign In FORM"
-            buttonText="LOG IN"
+            title="Sign In Form"
+            buttonText="Log In"
             toggleText="hoo...new here?"
             setState={setIsSigned}
             allReadySigned={true}
@@ -22,7 +22,7 @@ export default function WelcomePage({ setIsLogged, setPlayerDetails }) {
           <Form
             setPlayerDetails={setPlayerDetails}
             setIsLogged={setIsLogged}
-            title="Sign up FORM"
+            title="Sign up Form"
             buttonText="Sign Up"
             toggleText="Already have an account?"
             setState={setIsSigned}

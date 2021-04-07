@@ -7,7 +7,7 @@ import LabelInputForm from './LabalInputForm';
 import fetchData from '../helpFuncs/fetchData';
 
 const StyleForm = styled.form`
-  border: 3px solid black;
+  border: 1px solid #d4d4d599;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -84,7 +84,7 @@ export default function Form({
         e.preventDefault();
       }}
     >
-      <h1>{title}</h1>
+      <h1 className="ui header">{title}</h1>
       <LabelInputForm
         textLabel="Name"
         type="text"
@@ -109,15 +109,8 @@ export default function Form({
         condition={wrongInput}
         text="Your name or your password are invalid,please check again"
       />
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Button text={buttonText} func={onButtonClick} />
-      </div>
+
+      <Button text={buttonText} func={onButtonClick} />
       <ErrorMassage
         condition={!isFoundName}
         text="sorry,we didn't find your name or your password is incorrect...please check again"
