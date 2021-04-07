@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
-import Board from './components/Board';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -16,7 +15,8 @@ const StyleContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 92vh;
+  height: 100%;
+  max-height: 82vh;
 `;
 function App() {
   const [isLogged, setIsLogged] = useState(false);

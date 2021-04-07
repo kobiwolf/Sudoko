@@ -1,25 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 
-const StyleHead = styled.header`
-  height: 2rem;
-  background-color: lightgrey;
-  display: flex;
-  justify-content: space-around;
-`;
 const Header = ({ isLogged }) => (
-  <StyleHead>
+  <>
     {isLogged ? (
       <>
-        <Link to="/">Home</Link>
-        <Link to="/Players">Players Status</Link>
-        <Link to="/board">game</Link>
-        <a href="/">log out</a>
+        <div className="ui four item menu">
+          <Link className=" item" to="/">
+            Home
+          </Link>
+          <Link className=" item" to="/Players">
+            Players Status
+          </Link>
+          <Link className=" item" to="/board">
+            game
+          </Link>
+          <a className=" item" href="/">
+            log out
+          </a>
+        </div>
       </>
     ) : (
-      <h1>Welcome to SFF(Sudoku For Friends)</h1>
+      <div className="ui one item menu">
+        <h1 className="active item">Welcome to SFF(Sudoku For Friends)</h1>
+      </div>
     )}
-  </StyleHead>
+  </>
 );
 export default Header;

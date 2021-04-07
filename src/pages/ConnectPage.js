@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+
 import Form from '../components/Form';
-const StyleHead = styled.header`
-  height: 2rem;
-  background-color: lightgrey;
-  display: flex;
-  justify-content: space-around;
-  width=100%;
-`;
+
 export default function WelcomePage({ setIsLogged, setPlayerDetails }) {
   const [isSigned, setIsSigned] = useState(false);
 

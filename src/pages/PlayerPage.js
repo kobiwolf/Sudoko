@@ -4,6 +4,13 @@ import Api from '../helpFuncs/Api';
 import errorHandle from '../helpFuncs/errorHandle';
 import Card from '../components/Card';
 import Spinner from '../components/Spinner';
+import styled from 'styled-components';
+
+const StyleGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+`;
 
 export default function PlayerPage() {
   const [playersData, setPlayersData] = useState([]);
@@ -19,9 +26,19 @@ export default function PlayerPage() {
     getData();
   }, []);
   function display() {
-    return playersData.map(({ id, name, score, avatar, time }) => (
-      <Card key={id} name={name} score={score} source={avatar} time={time} />
-    ));
+    return (
+      <StyleGrid>
+        {playersData.map(({ id, name, score, avatar, time }) => (
+          <Card
+            key={id}
+            name={name}
+            score={score}
+            source={avatar}
+            time={time}
+          />
+        ))}
+      </StyleGrid>
+    );
   }
 
   return <>{playersData.length ? display() : <Spinner />}</>;

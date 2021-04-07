@@ -18,6 +18,7 @@ export default function LabelInputForm({
       <label htmlFor={textLabel}>{textLabel}:</label>
       <div>
         <input
+          placeholder={textLabel}
           ref={inputRef}
           type={type}
           id={textLabel}
@@ -25,7 +26,22 @@ export default function LabelInputForm({
           onChange={(e) => setMyState(e.target.value)}
         />
         {textLabel === 'Password' && (
-          <Button text="show" func={createShowButton} />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              text={
+                type === 'password' && textLabel === 'Password'
+                  ? 'show'
+                  : 'hide'
+              }
+              func={createShowButton}
+            />
+          </div>
         )}
       </div>
     </>

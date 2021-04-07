@@ -79,6 +79,7 @@ export default function Form({
 
   return (
     <StyleForm
+      className="ui form"
       onSubmit={(e) => {
         e.preventDefault();
       }}
@@ -108,8 +109,15 @@ export default function Form({
         condition={wrongInput}
         text="Your name or your password are invalid,please check again"
       />
-
-      <Button text={buttonText} func={onButtonClick} />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Button text={buttonText} func={onButtonClick} />
+      </div>
       <ErrorMassage
         condition={!isFoundName}
         text="sorry,we didn't find your name or your password is incorrect...please check again"
@@ -118,6 +126,7 @@ export default function Form({
         condition={nameTaken}
         text="Sorry,name already taken please choose another name"
       />
+
       <StyleButton
         onClick={() => {
           setWrongInput(false);
