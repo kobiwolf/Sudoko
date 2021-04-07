@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 import Board from './components/Board';
 import Header from './components/Header';
@@ -22,59 +22,47 @@ function App() {
   const [isLogged, setIsLogged] = useState(false);
   const [playerDetails, setPlayerDetails] = useState({});
 
-  const displayIfLogged = () => {
+  const display = () => {
     return (
       <>
-        <Header isLogged={isLogged} />
-        <StyleContainer>
-          <Switch>
-            <Route path="/" exact>
-              <HomePage playerDetails={playerDetails} />
-            </Route>
-            <Route path="/board" exact>
-              <Board
-                setValues={setValues}
-                values={values}
-                playerDetails={playerDetails}
-                setPlayerDetails={setPlayerDetails}
-              />
-            </Route>
-            <Route path="/players" exact>
-              <PlayerPage />
-            </Route>
-            <Route exact component={WrongPage} />
-          </Switch>
-        </StyleContainer>
-        <Footer />
-      </>
-    );
-  };
-  const displayIfNotLogged = () => {
-    return (
-      <>
-        <Header isLogged={isLogged} />
-        <Switch>
+        <BrowserRouter>
+          <Header isLogged={isLogged} />
           <StyleContainer>
-            <Route path="/" exact>
-              <ConnectPage
-                setIsLogged={setIsLogged}
-                setPlayerDetails={setPlayerDetails}
-              />
-            </Route>
+            <Switch>
+              <Route path="/" exact>
+                {isLogged ? (
+                  <HomePage playerDetails={playerDetails} />
+                ) : (
+                  <ConnectPage
+                    setIsLogged={setIsLogged}
+                    setPlayerDetails={setPlayerDetails}
+                  />
+                )}
+              </Route>
+              <Route path="/board" exact>
+                {isLogged ? (
+                  <Board
+                    setValues={setValues}
+                    values={values}
+                    playerDetails={playerDetails}
+                    setPlayerDetails={setPlayerDetails}
+                  />
+                ) : (
+                  <Redirect path="/" />
+                )}
+              </Route>
+              <Route path="/players" exact>
+                {isLogged ? <PlayerPage /> : <Redirect path="/" />}
+              </Route>
+              <Route exact component={WrongPage} />
+            </Switch>
           </StyleContainer>
-          <Route exact component={WrongPage} />
-        </Switch>
-        <Footer />
+          <Footer />
+        </BrowserRouter>
       </>
     );
   };
-  return (
-    <>
-      <BrowserRouter>
-        {isLogged ? displayIfLogged() : displayIfNotLogged()}
-      </BrowserRouter>
-    </>
-  );
+  return <>{display()}</>;
 }
 
 export default App;
