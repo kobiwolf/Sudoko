@@ -60,7 +60,12 @@ export default function Form({
     if (data.find((player) => player.name === name)) setNameTaken(true);
     else {
       setIsLogged(true);
-      await api.post('/', { name, password, score: 0 });
+      await api.post('/', {
+        name,
+        password,
+        score: 0,
+        avatar: 'https://joeschmoe.io/api/v1/random',
+      });
       setPlayerDetails({ name: name, score: 0 });
     }
   };
