@@ -57,6 +57,7 @@ export default function Form({
   };
   const signUpSubmit = async () => {
     const data = await fetchData();
+    console.log(data.length);
     if (data.find((player) => player.name === name)) setNameTaken(true);
     else {
       setIsLogged(true);
@@ -64,7 +65,9 @@ export default function Form({
         name,
         password,
         score: 0,
-        avatar: 'https://joeschmoe.io/api/v1/random',
+        avatar: `https://randomuser.me/api/portraits/men/${Math.floor(
+          Math.random() * 40
+        )}.jpg`,
       });
       setPlayerDetails({ name: name, score: 0 });
     }
