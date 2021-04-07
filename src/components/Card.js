@@ -28,8 +28,12 @@ export default function Card({ name, score, source, time }) {
           <span className="date">Joined in 2013</span>
         </div>
         <div className="description">
-          Best time :{time ? time[0][0] : null}:
-          {time && (time[0][1] < 10 ? `0${time[0][1]}` : time[0][1])}
+          {time
+            ? `Best time : ${time[0][0].padStart(
+                2,
+                '0'
+              )}: ${time[0][1].padStart(2, '0')}`
+            : "Didn't won yet..."}
         </div>
       </div>
       <div className="extra content">

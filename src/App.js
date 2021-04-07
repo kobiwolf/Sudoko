@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import ConnectPage from './pages/ConnectPage';
 import PlayerPage from './pages/PlayerPage';
 import WrongPage from './pages/WrongPage';
+import GamePage from './pages/GamePage';
 const StyleContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -18,7 +19,6 @@ const StyleContainer = styled.div`
   min-height: 92vh;
 `;
 function App() {
-  const [values, setValues] = useState({});
   const [isLogged, setIsLogged] = useState(false);
   const [playerDetails, setPlayerDetails] = useState({});
 
@@ -41,18 +41,16 @@ function App() {
               </Route>
               <Route path="/board" exact>
                 {isLogged ? (
-                  <Board
-                    setValues={setValues}
-                    values={values}
+                  <GamePage
                     playerDetails={playerDetails}
                     setPlayerDetails={setPlayerDetails}
                   />
                 ) : (
-                  <Redirect path="/" />
+                  <Redirect to="/" />
                 )}
               </Route>
               <Route path="/players" exact>
-                {isLogged ? <PlayerPage /> : <Redirect path="/" />}
+                {isLogged ? <PlayerPage /> : <Redirect to="/" />}
               </Route>
               <Route exact component={WrongPage} />
             </Switch>

@@ -6,10 +6,11 @@ const StyleH3 = styled.h3`
   display: inline;
   color: red;
 `;
-export default function Timer({ ref1, ref2 }) {
+export default function Timer({ ref1, ref2, reFresh }) {
   const [secs, setSecs] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [finishCount, setFinishCount] = useState(false);
+
   const addSec = async () => {
     if (finishCount) return;
     await setTimeout(() => {
@@ -30,8 +31,8 @@ export default function Timer({ ref1, ref2 }) {
 
   return (
     <div>
-      <StyleH3 ref={ref2}>{minutes}</StyleH3>:
-      <StyleH3 ref={ref1}>{secs}</StyleH3>
+      <StyleH3 ref={ref2}>{minutes.toString().padStart(2, '0')}</StyleH3>:
+      <StyleH3 ref={ref1}>{secs.toString().padStart(2, '0')}</StyleH3>
     </div>
   );
 }

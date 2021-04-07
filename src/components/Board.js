@@ -21,7 +21,14 @@ const StyleBoard = styled.div`
   grid-template-rows: repeat(9, 4rem);
 `;
 
-function Board({ setValues, values, setPlayerDetails, playerDetails }) {
+function Board({
+  setValues,
+  values,
+  setPlayerDetails,
+  playerDetails,
+  setReFresh,
+  reFresh,
+}) {
   const [rowsCols, setRowsCols] = useState([]);
   const [intialValues, setInitialValues] = useState([]);
   const [moves, setMoves] = useState([]);
@@ -29,6 +36,8 @@ function Board({ setValues, values, setPlayerDetails, playerDetails }) {
   const [gridSize, setGridSize] = useState(9);
   const [level, setLevel] = useState('easy');
   const [isWon, setIsWon] = useState(false);
+  const [isTimer, setIsTimer] = useState(true);
+
   const minutesRef = useRef();
   const secsRef = useRef();
 
@@ -72,6 +81,7 @@ function Board({ setValues, values, setPlayerDetails, playerDetails }) {
       const oldTime = copy.time[0] * 60 + copy.time[1];
       if (newTime > oldTime) copy.time = [minutes, secs];
     } else copy.time = [[minutes, secs]];
+    console.log(setPlayerDetails);
     setPlayerDetails(copy);
     fetchData().then((promise) => {
       const match = promise.find((person) => person.name === copy.name);
@@ -152,8 +162,15 @@ function Board({ setValues, values, setPlayerDetails, playerDetails }) {
     }
     return { valuesSquares, arrOfSets, valuesCols };
   };
+  const theTimer = () => {
+    setIsTimer(false);
+    setTimeout(() => {
+      setIsTimer(true);
+    }, 0.5);
+  };
   const createStartBoard = () => {
     setIsWon(false);
+    theTimer();
     const seti = new Set();
     while (seti.size < gridSize) {
       seti.add(Math.ceil(Math.random() * gridSize));
@@ -244,7 +261,9 @@ function Board({ setValues, values, setPlayerDetails, playerDetails }) {
       <>
         {!isWon ? (
           <>
-            <Timer ref1={secsRef} ref2={minutesRef} />
+            {isTimer && (
+              <Timer ref1={secsRef} ref2={minutesRef} reFresh={reFresh} />
+            )}
             <StyleBoard>
               {rowsCols.map(({ row, col }) => {
                 return (
@@ -271,7 +290,7 @@ function Board({ setValues, values, setPlayerDetails, playerDetails }) {
         )}
         <div>
           <Button text="check" func={onButtonClick} />
-          <Button text="fill mode" func={createStartBoard} />
+          <Button text="new game" func={createStartBoard} />
           <Button text="undo" func={undoAction} />
 
           <Select

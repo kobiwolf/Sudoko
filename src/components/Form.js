@@ -57,7 +57,7 @@ export default function Form({
   };
   const signUpSubmit = async () => {
     const data = await fetchData();
-    console.log(data.length);
+
     if (data.find((player) => player.name === name)) setNameTaken(true);
     else {
       setIsLogged(true);
