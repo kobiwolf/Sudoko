@@ -10,10 +10,7 @@ const StyleGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
-  @media (max-width: 650px) {
-    display: flex;
-    flex-direction: column;
-  }
+  overflow: auto;
 `;
 
 export default function PlayerPage() {
