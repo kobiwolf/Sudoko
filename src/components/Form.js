@@ -52,7 +52,12 @@ export default function Form({
     if (!match) setIsFoundName(false);
     else {
       setIsLogged(true);
-      setPlayerDetails({ name: match.name, score: match.score });
+      setPlayerDetails({
+        name: match.name,
+        score: match.score,
+        avatar: match.avatar,
+        time: match.time,
+      });
     }
   };
   const signUpSubmit = async () => {

@@ -9,6 +9,9 @@ const StyleFooter = styled.footer`
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
 `;
 export default function Footer() {
   return (

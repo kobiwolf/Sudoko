@@ -1,11 +1,15 @@
 import React from 'react';
+import Card from '../components/Card';
 
-export default function HomePage({ playerDetails: { name, score } }) {
+export default function HomePage({
+  playerDetails: { name, score, avatar, time },
+}) {
   return (
-    <div>
-      <h1>
-        welcome:{name} your score is:{score}
-      </h1>
-    </div>
+    <>
+      <h1>Hello! {name} Welcome Back! </h1>
+      <div>
+        <Card name={name} score={score} source={avatar} time={time} />
+      </div>
+    </>
   );
 }
