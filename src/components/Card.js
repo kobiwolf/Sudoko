@@ -1,8 +1,9 @@
 import React from 'react';
 
-export default function Card({ name, score, source, time }) {
+export default function Card({ name, score, source, time, list }) {
+  const style = list ? { marginBottom: '30rem' } : null;
   return (
-    <div className="ui card">
+    <div className="ui card" style={style}>
       <div className="image">
         <img src={source} alt="profile " />
       </div>

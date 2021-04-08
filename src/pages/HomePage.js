@@ -8,7 +8,13 @@ export default function HomePage({
     <>
       <h1>Hello! {name} Welcome Back! </h1>
       <div>
-        <Card name={name} score={score} source={avatar} time={time} />
+        <Card
+          name={name}
+          score={score}
+          source={avatar}
+          time={time}
+          list={false}
+        />
       </div>
     </>
   );

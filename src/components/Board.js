@@ -14,6 +14,7 @@ import Button from './Button';
 import Select from './Select';
 import Timer from './Timer';
 import WonMassage from './WonMassage';
+import WrongMassage from './WrongMassage';
 
 const StyleBoard = styled.div`
   display: grid;
@@ -45,6 +46,7 @@ function Board({
   const [gridSize, setGridSize] = useState(9);
   const [level, setLevel] = useState('easy');
   const [isWon, setIsWon] = useState(false);
+  const [isWrong, setIsWrong] = useState(false);
   const [isTimer, setIsTimer] = useState(true);
 
   const minutesRef = useRef();
@@ -90,7 +92,7 @@ function Board({
       const oldTime = copy.time[0] * 60 + copy.time[1];
       if (newTime > oldTime) copy.time = [minutes, secs];
     } else copy.time = [[minutes, secs]];
-    console.log(setPlayerDetails);
+
     setPlayerDetails(copy);
     fetchData().then((promise) => {
       const match = promise.find((person) => person.name === copy.name);
@@ -114,6 +116,11 @@ function Board({
       if (booli) {
         updateTimeAndScore();
         setIsWon(booli);
+      } else {
+        setIsWrong(true);
+        setTimeout(() => {
+          setIsWrong(false);
+        }, 1000);
       }
     }
   };
@@ -177,13 +184,16 @@ function Board({
       setIsTimer(true);
     }, 0.5);
   };
+
   const createStartBoard = () => {
     setIsWon(false);
     theTimer();
+
     const seti = new Set();
     while (seti.size < gridSize) {
       seti.add(Math.ceil(Math.random() * gridSize));
     }
+
     let arr = {};
     arr[0] = [...seti];
     for (let i = 1; i < gridSize; i++) {
@@ -264,6 +274,50 @@ function Board({
     }
     return true;
   };
+  const solution = () => {
+    setIsWon(false);
+    theTimer();
+
+    const seti = new Set();
+    while (seti.size < gridSize) {
+      seti.add(Math.ceil(Math.random() * gridSize));
+    }
+
+    let arr = {};
+    arr[0] = [...seti];
+    for (let i = 1; i < gridSize; i++) {
+      arr[i] = [];
+      for (let j = 0; j < gridSize; j++) {
+        if (i !== 3 && i !== 6) {
+          arr[i][j] = j < 6 ? arr[i - 1][j + 3] : arr[i - 1][j - 6];
+        } else {
+          arr[i][j] = j === 8 ? arr[i - 1][0] : arr[i - 1][j + 1];
+        }
+      }
+    }
+
+    // this if made for another rotate of the sudoku in order to confuse
+    if (Math.random() > 0.1) {
+      const copy = deepCopy(arr);
+      for (let x = 0; x < 9; x++) {
+        for (let y = 0; y < 9; y++) {
+          copy[x][y] = arr[y][8 - x];
+          copy[y][8 - x] = arr[8 - x][8 - y];
+          copy[8 - x][8 - y] = arr[8 - y][x];
+          copy[8 - y][x] = arr[x][y];
+        }
+      }
+      arr = deepCopy(copy);
+    }
+    const copy = deepCopy(arr);
+    for (let x = 0; x < 9; x++) {
+      copy[3][x] = arr[5][x];
+      copy[5][x] = arr[3][x];
+    }
+    arr[8][8] = '';
+    setValues(arr);
+    setInitialValues(arr);
+  };
 
   const display = () => {
     return (
@@ -273,34 +327,39 @@ function Board({
             {isTimer && (
               <Timer ref1={secsRef} ref2={minutesRef} reFresh={reFresh} />
             )}
-            <StyleBoard>
-              {rowsCols.map(({ row, col }) => {
-                return (
-                  <React.Fragment key={uniqid()}>
-                    {intialValues[row][col] ? (
-                      <H3 text={values[row][col]} row={row} col={col} />
-                    ) : (
-                      <Input
-                        row={row}
-                        col={col}
-                        state={values}
-                        setState={setValues}
-                        moves={moves}
-                        setMoves={setMoves}
-                      />
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </StyleBoard>
+            {isWrong ? (
+              <WonMassage isWon={isWon} />
+            ) : (
+              <StyleBoard>
+                {rowsCols.map(({ row, col }) => {
+                  return (
+                    <React.Fragment key={uniqid()}>
+                      {intialValues[row][col] ? (
+                        <H3 text={values[row][col]} row={row} col={col} />
+                      ) : (
+                        <Input
+                          row={row}
+                          col={col}
+                          state={values}
+                          setState={setValues}
+                          moves={moves}
+                          setMoves={setMoves}
+                        />
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </StyleBoard>
+            )}
           </>
         ) : (
-          <WonMassage playerDetails={playerDetails} />
+          <WonMassage playerDetails={playerDetails} isWon={isWon} />
         )}
         <div>
           <Button text="check" func={onButtonClick} />
           <Button text="new game" func={createStartBoard} />
           <Button text="undo" func={undoAction} />
+          <Button text="solve" func={solution} />
 
           <Select
             sendRef={selectRefLevel}

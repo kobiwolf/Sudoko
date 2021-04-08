@@ -11,6 +11,11 @@ const StyleGrid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   overflow: auto;
+  @media (max-width: 650px) {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+  }
 `;
 
 export default function PlayerPage() {
@@ -36,6 +41,7 @@ export default function PlayerPage() {
             score={score}
             source={avatar}
             time={time}
+            list={true}
           />
         ))}
       </StyleGrid>
