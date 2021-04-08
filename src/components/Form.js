@@ -65,16 +65,17 @@ export default function Form({
 
     if (data.find((player) => player.name === name)) setNameTaken(true);
     else {
+      const avatar = `https://randomuser.me/api/portraits/men/${Math.floor(
+        Math.random() * 40
+      )}.jpg`;
       setIsLogged(true);
       await api.post('/', {
         name,
         password,
         score: 0,
-        avatar: `https://randomuser.me/api/portraits/men/${Math.floor(
-          Math.random() * 40
-        )}.jpg`,
+        avatar: avatar,
       });
-      setPlayerDetails({ name: name, score: 0 });
+      setPlayerDetails({ name: name, score: 0, avatar });
     }
   };
   const onButtonClick = () => {

@@ -6,7 +6,10 @@ export default function HomePage({
 }) {
   return (
     <>
-      <h1>Hello! {name} Welcome Back! </h1>
+      <h1>
+        Welcome {avatar ? 'Back:' : null}
+        {name}
+      </h1>
       <div>
         <Card
           name={name}
